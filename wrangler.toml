@@ -1,0 +1,10 @@
+# [[d1_databases]]
+# binding = "DB" # i.e. available in your Worker on env.DB
+# database_name = "tbdb"
+# database_id = "143343f0-3b45-4d0c-b1d0-f9b0b213b72b"
+
+[[d1_databases]]
+binding = "D1"
+database_name = "D1"
+database_id = "D1"
+preview_database_id = "D1"

@@ -1,0 +1,31 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Kysely } from 'kysely';
+import { D1Dialect } from 'kysely-d1';
+import type { DB } from '../../../prisma/generated/types';
+
+import { SignIn, SignOut } from 'auth-astro/components'
+
+
+
+const { board } = Astro.params;
+const board_name = board ?? "";
+const runtime = Astro.locals.runtime;
+const raw = runtime.env?.D1;
+const db = new Kysely<DB>({ dialect: new D1Dialect({ database:  raw}) });
+const boards = await db.selectFrom("Board").select('name').execute();
+console.log(boards, "before", board,  "after", board_name)
+---
+<Layout title="Welcome to Astro.">
+    <ul class="flex space-x-2">
+        <li>all boards:</li>
+        {boards.map((b) => <li><a href={`/${b.name}/`}>/{b.name}/</a></li>)}
+    </ul>
+    <h1 class="text-4xl">/{board}/</h1>
+
+    {boards.some(b => b.name === board_name) ? <p>Has board</p> : <p>board doesn't exist</p>}
+<h1>Sign</h1>
+    <SignIn provider="github" />
+	<SignOut />
+
+</Layout>

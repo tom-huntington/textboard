@@ -1,14 +1,10 @@
-<---
+---
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 import ForumThread from '../components/ForumThread.astro';
 import type { DB } from '../../prisma/generated/types';
 import { SignIn, SignOut } from 'auth-astro/components'
 
-const posts = [
-    { id: 1, author: "User1", content: "This is the first post." },
-    { id: 2, author: "User2", content: "Reply to the first post." },
-];
 
 import { Kysely } from 'kysely';
 import { D1Dialect } from 'kysely-d1';
@@ -17,19 +13,25 @@ export interface Env {
 DB: D1Database;
 }
 
-const runtime = Astro.locals.runtime;
-const raw = runtime.env?.D1;
-const db = new Kysely<DB>({ dialect: new D1Dialect({ database:  raw}) });
-const boards = await db.selectFrom("Board").selectAll().execute();
+// const runtime = Astro.locals.runtime;
+// const raw = runtime.env?.D1;
+// const db = new Kysely<DB>({ dialect: new D1Dialect({ database:  raw}) });
+// const boards = await db.selectFrom("Board").selectAll().execute();
+
 //const result = await raw.prepare("SELECT * FROM Board").all();
 //console.log(result.results);
 //const boards = [] as {id: number, name: string}[];
 
 
-import { getSession } from 'auth-astro/server';
+// import { getSession } from 'auth-astro/server';
+// const session = await getSession(Astro.request);
 
-const session = await getSession(Astro.request);
-console.log(session);
+
+//console.log(session);
+
+console.log("headers")
+//console.log()
+const header_entries = Array.from(Astro.request.headers.entries())
 ---
 
 <Layout title="Welcome to Astro.">
@@ -37,19 +39,16 @@ console.log(session);
 		<div class="max-w-3xl mx-auto p-4">
 			<h1 class="text-2xl font-bold mb-4">Forum Thread Title</h1>
 			<p>hello astro</p>
-			{posts.map((post)=> <ForumThread {...post}/>)}
-			<ul>
+			<!-- <ul>
 				{boards.map((board) => <li>{board.name}</li>)}
-			</ul>
+			</ul> -->
 			
 		</div>
 	</main>
-	<h1 class="text-2xl font-bold mb-4"> Sign </h1>
+	<!-- <h1 class="text-2xl font-bold mb-4"> Sign </h1>
 	<SignIn provider="github" >SignIn</SignIn>
 	<SignOut>SignOut</SignOut>
-	{session ? <p>SignedIn</p> : <p>SignedOut</p> }
-</Layout>
+	{session ? <p>SignedIn</p> : <p>SignedOut</p> } -->
 
-<style>
-	
-</style>
+	{header_entries.map(([k,v])=> <p>{k}: {v}</p>)}
+</Layout>

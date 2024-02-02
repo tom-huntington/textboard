@@ -1,12 +1,32 @@
 ---
+import { Kysely } from 'kysely';
+import { D1Dialect } from 'kysely-d1';
+import type { DB } from '../../../../prisma/generated/types';
+import Layout from '../../../layouts/Layout.astro';
+
 const { board, thread } = Astro.params;
+const threadId = thread ?  parseInt(thread) : global.NaN;
+if (isNaN(threadId)) { Astro.redirect("/")}
+
+const raw = Astro.locals.runtime.env.D1;
+const db = new Kysely<DB>({ dialect: new D1Dialect({ database:  raw}) });
+const thread_row = await db.selectFrom("Thread").selectAll().where("Thread.id", '=', threadId).executeTakeFirst();
+const posts = await db.selectFrom("Post").selectAll().where("Post.threadId", "=", threadId).execute();
 ---
-<html>
-<head>
-  <title>{board} {thread}</title>
-</head>
-<body>
-  <h1>{board} {thread}</h1>
-  <p>content</p>
+<!DOCTYPE html>
+<html lang="en">
+<body class="bg-gray-100 p-6">
+
+  <div class="max-w-2xl mx-auto">
+          <h2 class="text-xl font-bold mb-2">{thread_row?.title}</h2>
+
+          {posts.map((p)=>
+          <div class="bg-white p-4 mb-4 border rounded">
+              <p class="text-gray-600">{p.content}</p>
+              <span class="text-sm text-gray-400">Posted by {p.threadHandle} on {p.createdAt}</span>
+          </div>
+        )}
+  </div>
+
 </body>
 </html>

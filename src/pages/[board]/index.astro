@@ -14,6 +14,17 @@ const runtime = Astro.locals.runtime;
 const raw = runtime.env?.D1;
 const db = new Kysely<DB>({ dialect: new D1Dialect({ database:  raw}) });
 const boards = await db.selectFrom("Board").select('name').execute();
+const boardExists = boards.some(b => b.name === board_name);
+
+const threads = await (async function(){ if (!boardExists) { return [];}
+else {
+  return await db.selectFrom("Thread").where('boardId', '=', 1).selectAll().orderBy('Thread.id desc').limit(5).execute();
+  //return [1,23];
+}
+
+})();
+
+
 console.log(boards, "before", board,  "after", board_name)
 ---
 <Layout title="Welcome to Astro.">
@@ -23,9 +34,34 @@ console.log(boards, "before", board,  "after", board_name)
     </ul>
     <h1 class="text-4xl">/{board}/</h1>
 
-    {boards.some(b => b.name === board_name) ? <p>Has board</p> : <p>board doesn't exist</p>}
+    { boardExists ? <p>Has board</p> : <p>board doesn't exist</p>}
+
+<h1>Threads {threads.length}</h1>
+
+<ul>
+  {threads.map((t)=> <li><a href={`/${board_name}/thread/${t.id}`}>{t.title}</a></li> )}
+</ul>
+
 <h1>Sign</h1>
     <SignIn provider="github" />
 	<SignOut />
+
+<h1>New Thread</h1>
+
+<Layout title="New Thread">
+    <form action="/api/newthread" method="post">
+        <label>
+          Title
+          <input type="text" name="title" />
+        </label>
+    
+        <label>
+          Content
+          <input type="text" name="content" />
+        </label>
+    
+        <button>Post</button>
+      </form>
+</Layout>
 
 </Layout>

@@ -11,12 +11,12 @@ datasource db {
 }
 
 // Define the User table
-model User {
-  id        Int      @id @default(autoincrement())
-  handle  String   @unique
-  threads   Thread[] @relation("user_threads")
-  posts     Post[]   @relation("user_posts")
-}
+// model User {
+//   id        Int      @id @default(autoincrement())
+//   handle  String   @unique
+//   threads   Thread[] @relation("user_threads")
+//   posts     Post[]   @relation("user_posts")
+// }
 
 // Define the Board table
 model Board {
@@ -29,11 +29,9 @@ model Board {
 model Thread {
   id        Int      @id @default(autoincrement())
   title     String
-  content   String
   createdAt DateTime @default(now())
-  userId    Int
+  userHandle  String
   boardId   Int
-  user      User     @relation("user_threads", fields: [userId], references: [id])
   board     Board    @relation("board_threads", fields: [boardId], references: [id])
   posts     Post[]   @relation("thread_posts")
 }
@@ -43,8 +41,8 @@ model Post {
   id        Int      @id @default(autoincrement())
   content   String
   createdAt DateTime @default(now())
-  userId    Int
   threadId  Int
-  user      User     @relation("user_posts", fields: [userId], references: [id])
+  userHandle  String
+  threadHandle String
   thread    Thread   @relation("thread_posts", fields: [threadId], references: [id])
 }

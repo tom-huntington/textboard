@@ -1,8 +1,9 @@
 import { defineConfig } from 'astro/config';
 import cloudflare from "@astrojs/cloudflare";
 import tailwind from '@astrojs/tailwind';
-
 import auth from "auth-astro";
+
+import simpleStackForm from "simple-stack-form";
 
 // https://astro.build/config
 export default defineConfig({
@@ -24,5 +25,5 @@ export default defineConfig({
       }
     }
   }),
-  integrations: [tailwind(), auth()]
+  integrations: [tailwind(), auth(), simpleStackForm()]
 });

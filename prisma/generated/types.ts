@@ -12,24 +12,19 @@ export type Post = {
     id: Generated<number>;
     content: string;
     createdAt: Generated<string>;
-    userId: number;
     threadId: number;
+    userHandle: string;
+    threadHandle: string;
 };
 export type Thread = {
     id: Generated<number>;
     title: string;
-    content: string;
     createdAt: Generated<string>;
-    userId: number;
+    userHandle: string;
     boardId: number;
-};
-export type User = {
-    id: Generated<number>;
-    handle: string;
 };
 export type DB = {
     Board: Board;
     Post: Post;
     Thread: Thread;
-    User: User;
 };

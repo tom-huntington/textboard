@@ -4,6 +4,7 @@ dist/
 # generated types
 .astro/
 .wrangler/
+prisma/migrations/
 
 # dependencies
 node_modules/

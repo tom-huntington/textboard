@@ -39,10 +39,11 @@ model Thread {
 // Define the Post table
 model Post {
   id        Int      @id @default(autoincrement())
-  content   String
   createdAt DateTime @default(now())
+  unix_epoch Int     @default(dbgenerated("(strftime('%s'))"))
+  content   String
   threadId  Int
   userHandle  String
-  threadHandle String
+  country   String
   thread    Thread   @relation("thread_posts", fields: [threadId], references: [id])
 }

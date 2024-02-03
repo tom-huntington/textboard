@@ -3,6 +3,8 @@ import { Kysely } from 'kysely';
 import { D1Dialect } from 'kysely-d1';
 import type { DB } from '../../../../prisma/generated/types';
 import Layout from '../../../layouts/Layout.astro';
+import Identicon from '../../../components/Identicon.astro';
+import "/node_modules/flag-icons/css/flag-icons.min.css";
 
 const { board, thread } = Astro.params;
 const threadId = thread ?  parseInt(thread) : global.NaN;
@@ -13,20 +15,64 @@ const db = new Kysely<DB>({ dialect: new D1Dialect({ database:  raw}) });
 const thread_row = await db.selectFrom("Thread").selectAll().where("Thread.id", '=', threadId).executeTakeFirst();
 const posts = await db.selectFrom("Post").selectAll().where("Post.threadId", "=", threadId).execute();
 ---
-<!DOCTYPE html>
-<html lang="en">
-<body class="bg-gray-100 p-6">
-
+<Layout title="Welcome to Astro.">
   <div class="max-w-2xl mx-auto">
           <h2 class="text-xl font-bold mb-2">{thread_row?.title}</h2>
 
           {posts.map((p)=>
-          <div class="bg-white p-4 mb-4 border rounded">
-              <p class="text-gray-600">{p.content}</p>
-              <span class="text-sm text-gray-400">Posted by {p.threadHandle} on {p.createdAt}</span>
+          <div class="p-4 mb-4 border rounded">
+              <p >{p.content}</p>
+              <div class="text-sm">{p.createdAt}</div>
+              <div class={`fi fi-${p.country}`}></div>
+              <!--<div class={`fi fi-nz`}></div>-->
+              <Identicon threadId={1} userHandle={p.userHandle}/>
+              <div class="flex">
+  <!-- Left Panel -->
+  <div class="bg-blue-500">
+    <Identicon threadId={1} userHandle={p.userHandle}/>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="flex flex-col">
+
+    <!-- Top Right Panel -->
+    <div class="bg-green-500">
+      <span class="text-sm">{p.createdAt}</span>
+      <span class={`fi fi-${p.country}`}></span>
+    </div>
+
+    <!-- Bottom Right Panel -->
+    <div class="bg-yellow-500 p-1 flex-1">
+      <h2 class="text-white">Bottom Right Panel</h2>
+      <!-- Add your content here -->
+    </div>
+
+  </div>
+</div>
           </div>
         )}
   </div>
 
-</body>
-</html>
+  <div class="flex">
+    <div class="bg-blue-500">
+      <h2 class="text-white">Left Panel</h2>
+      <h2 class="text-white">Left Panel</h2>
+      <h2 class="text-white">Left Panel</h2>
+      <h2 class="text-white">Left Panel</h2>
+    </div>
+  
+    <!-- Right Panel -->
+    <div class="flex flex-col">
+  
+      <div class="bg-green-500">
+        <h2 class="text-white">Top Right Panel</h2>
+      </div>
+  
+      <div class="bg-yellow-500 p-1 flex-1">
+        <h2 class="text-white">Bottom Right Panel</h2>
+      </div>
+  
+    </div>
+  </div>
+  
+</Layout>

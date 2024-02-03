@@ -7,8 +7,8 @@ import { z } from "zod";
 import { createForm } from "simple:form";
 
 const postSchema = createForm({
-  boardId: z.number(),
-  title: z.string(),
+    boardId: z.string(),
+    threadId: z.string(),
     content: z.string(),
 });
 
@@ -32,9 +32,9 @@ export const POST: APIRoute = async ({ request, redirect, locals }) => {
       const data = await locals.form.getData(postSchema);
       if (! data?.data) { throw Error("zod failed"); }
 
-      const {title, content, boardId} = data.data;
+      const {title, content} = data.data;
       const userHandle = "todo";
-      //const boardId = 1;
+      const boardId = 1;
       // const title = data.get("title");
       // const content = data.get("content");
       //console.log   ("success", name, email);
@@ -44,7 +44,6 @@ export const POST: APIRoute = async ({ request, redirect, locals }) => {
       const db = new Kysely<DB>({ dialect: new D1Dialect({ database:  raw}) });
       console.log("4")
       const country = request.headers.get("cf-ipcountry") ?? "xx";
-      
       
         const thread = await db.insertInto("Thread").values({title, userHandle, boardId}).returning('id').executeTakeFirstOrThrow();
         const post = await db.insertInto("Post").values({

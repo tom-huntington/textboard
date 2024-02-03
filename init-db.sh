@@ -1,0 +1,1 @@
+npx wrangler d1 execute D1 --local --command="INSERT INTO Board (name) VALUES ('b');"

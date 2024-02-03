@@ -8,6 +8,8 @@ import { SignIn, SignOut } from 'auth-astro/components'
 
 import { Kysely } from 'kysely';
 import { D1Dialect } from 'kysely-d1';
+import { minidenticon } from 'minidenticons'
+import tor_svg from "/public/Tor_Browser_icon.svg?raw"; 
 
 export interface Env {
 DB: D1Database;
@@ -23,15 +25,25 @@ DB: D1Database;
 //const boards = [] as {id: number, name: string}[];
 
 
-// import { getSession } from 'auth-astro/server';
-// const session = await getSession(Astro.request);
-
+import { getSession } from 'auth-astro/server';
+import { string } from 'zod';
+import Identicon from '../components/Identicon.astro';
+const session = await getSession(Astro.request);
+console.log(session);
 
 //console.log(session);
 
 console.log("headers")
 //console.log()
+
+const country = Astro.request.headers.get("cf-ipcountry") ?? "xx";
+
 const header_entries = Array.from(Astro.request.headers.entries())
+
+const svg = 'data:image/svg+xml;utf8,' + encodeURIComponent(minidenticon("aa", 90, 45));
+//console.log(svg);
+
+
 ---
 
 <Layout title="Welcome to Astro.">
@@ -42,13 +54,25 @@ const header_entries = Array.from(Astro.request.headers.entries())
 			<!-- <ul>
 				{boards.map((board) => <li>{board.name}</li>)}
 			</ul> -->
+			<!-- {session && <img src={svg} alt={aaaa}/>} -->
+			<!-- {session?.user && <Identicon threadId={1} user={session?.user}/>} -->
 			
+			<span class={`fi fi-${country}`}></span>
+			<span class={`fi fi-t1`}></span>
+			<!-- <span class="fi" style={{backgroundImage: 'url(/public/Tor_Browser_icon.svg)'}} /> -->
+			<!-- <Fragment set:html={tor_svg} /> -->
 		</div>
 	</main>
-	<!-- <h1 class="text-2xl font-bold mb-4"> Sign </h1>
+	<h1 class="text-2xl font-bold mb-4"> Sign </h1>
 	<SignIn provider="github" >SignIn</SignIn>
 	<SignOut>SignOut</SignOut>
-	{session ? <p>SignedIn</p> : <p>SignedOut</p> } -->
+	{session ? <p>SignedIn</p> : <p>SignedOut</p> }
 
 	{header_entries.map(([k,v])=> <p>{k}: {v}</p>)}
 </Layout>
+
+<style>
+	.fi-t1 {
+    background-image: url(/public/Tor_Browser_icon.svg);
+}
+</style>

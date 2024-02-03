@@ -1,0 +1,21 @@
+---
+import { minidenticon } from 'minidenticons'
+import type { User } from '@auth/core/types'
+interface Props {
+  threadId: number;
+  userHandle: string;
+  saturation?: number;
+  lightness?: number;
+}
+
+const { threadId, userHandle, saturation=90, lightness=45 } = Astro.props;
+const seed = threadId.toString() + userHandle;
+// const myText = new TextEncoder().encode(info);
+// const myDigest = await crypto.subtle.digest({ name: 'SHA-256', }, myText);
+// const hashArray = Array.from(new Uint8Array(myDigest));
+// const seed =  hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");;
+//console.log(seed);
+
+const svg = 'data:image/svg+xml;utf8,' + encodeURIComponent(minidenticon(seed, saturation, lightness));
+---
+<img src={svg} width="100" alt="thread local identicon"/>

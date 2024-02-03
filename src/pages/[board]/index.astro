@@ -13,12 +13,14 @@ const board_name = board ?? "";
 const runtime = Astro.locals.runtime;
 const raw = runtime.env?.D1;
 const db = new Kysely<DB>({ dialect: new D1Dialect({ database:  raw}) });
-const boards = await db.selectFrom("Board").select('name').execute();
-const boardExists = boards.some(b => b.name === board_name);
+const boards = await db.selectFrom("Board").selectAll().execute();
+const boardId = boards.find(b => b.id === 1)?.id;
+const boardExists = boardId !== undefined;
+//const boardExists = boards.some(b => b.name === board_name);
 
 const threads = await (async function(){ if (!boardExists) { return [];}
 else {
-  return await db.selectFrom("Thread").where('boardId', '=', 1).selectAll().orderBy('Thread.id desc').limit(5).execute();
+  return await db.selectFrom("Thread").where('boardId', '=', boardId).selectAll().orderBy('Thread.id desc').limit(5).execute();
   //return [1,23];
 }
 
@@ -50,6 +52,8 @@ console.log(boards, "before", board,  "after", board_name)
 
 <Layout title="New Thread">
     <form action="/api/newthread" method="post">
+        <input type="number" name="boardId" value={boardId} hidden readonly />
+
         <label>
           Title
           <input type="text" name="title" />

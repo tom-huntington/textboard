@@ -10,11 +10,12 @@ export type Board = {
 };
 export type Post = {
     id: Generated<number>;
-    content: string;
     createdAt: Generated<string>;
+    unix_epoch: Generated<number>;
+    content: string;
     threadId: number;
     userHandle: string;
-    threadHandle: string;
+    country: string;
 };
 export type Thread = {
     id: Generated<number>;
